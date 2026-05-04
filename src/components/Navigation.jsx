@@ -1,3 +1,4 @@
+import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import { useState, useEffect, useCallback } from "react"
 import {
   BookOpen, FileText, Settings, Save, LogOut,
@@ -28,10 +29,11 @@ const SubBadge = ({ subscription }) => {
 }
 
 /* ── Nav item ─────────────────────────────────────────────── */
-const NavItem = ({ item, isActive, collapsed, badge, onClick }) => {
+const NavItem = ({ item, isActive, collapsed, badge, to, onClick }) => {
   const Icon = item.icon
   return (
-    <button
+    <NavLink
+      to={to}
       onClick={onClick}
       title={collapsed ? item.label : ""}
       style={{
@@ -63,7 +65,7 @@ const NavItem = ({ item, isActive, collapsed, badge, onClick }) => {
           )}
         </>
       )}
-    </button>
+    </NavLink>
   )
 }
 
@@ -117,7 +119,9 @@ const RecentPanel = ({ activities }) => {
 
 /* ── MAIN ─────────────────────────────────────────────────── */
 const Navigation = () => {
-  const { currentView, setCurrentView, user, logout, getDashboardStats, getSubscriptionInfo, apiRequest, isAuthenticated } = useGlobals()
+  const { user, logout, getDashboardStats, getSubscriptionInfo, apiRequest, isAuthenticated } = useGlobals()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -126,12 +130,12 @@ const Navigation = () => {
   const [stats, setStats] = useState({ totalExams:0, totalQuestions:0, recentActivity:[] })
 
   const menuItems = [
-    { id:"dashboard",          label:"Dashboard",       icon:LayoutDashboard },
-    { id:"create-exam",        label:"Create Exam",     icon:WandIcon },
-    { id:"schemes-generator",  label:"Manage Schemes",  icon:FileText },
-    { id:"question-bank",      label:"Question Bank",   icon:BookOpen },
-    { id:"my-exams",           label:"My Exams",        icon:Save },
-    { id:"settings",           label:"Settings",        icon:Settings },
+    { id:"dashboard", path:"/dashboard", label:"Dashboard", icon:LayoutDashboard },
+    { id:"create-exam", path:"/create-exam", label:"Create Exam", icon:WandIcon },
+    { id:"schemes", path:"/schemes", label:"Manage Schemes", icon:FileText },
+    { id:"question-bank", path:"/question-bank", label:"Question Bank", icon:BookOpen },
+    { id:"my-exams", path:"/my-exams", label:"My Exams", icon:Save },
+    { id:"settings", path:"/settings", label:"Settings", icon:Settings },
   ]
 
   const detectScreen = useCallback(() => {
@@ -166,10 +170,18 @@ const Navigation = () => {
   }, [isAuthenticated, user, getDashboardStats, getSubscriptionInfo])
 
   const handleLogout = async () => {
-    try { try { await apiRequest("/api/auth/logout", { method:"POST" }) } catch {} logout() } catch { logout() }
+    try { try { await apiRequest("/api/auth/logout", { method:"POST" }) } catch {} logout()
+    navigate("/", { replace: true })
+  } catch {
+    logout()
+    navigate("/", { replace: true })
+  }
   }
 
-  const navigate = (id) => { setCurrentView(id); if (isMobile) setMobileOpen(false) }
+  const handleNavigate = (path) => {
+    navigate(path)
+    if (isMobile) setMobileOpen(false)
+  }
 
   if (!isAuthenticated) return null
 
@@ -209,10 +221,11 @@ const Navigation = () => {
         {menuItems.map(item => (
           <NavItem
             key={item.id} item={item}
-            isActive={currentView === item.id}
+            isActive={location.pathname === item.path}
             collapsed={collapsed && !isDrawer}
             badge={item.id === "dashboard" ? stats.recentActivity.length : 0}
-            onClick={() => navigate(item.id)}
+            to={item.path}
+            onClick={() => handleNavigate(item.path)}
           />
         ))}
       </div>

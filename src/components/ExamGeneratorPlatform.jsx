@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import CreateExam from "./CreateExam";
 import ReviewExam from "./ReviewExam";
@@ -79,7 +79,10 @@ const PageView = ({ children, viewKey }) => {
 };
 
 /* ─── Main authenticated app ─────────────────────────────── */
-const MainApp = ({ currentView }) => (
+const MainApp = () => {
+  const location = useLocation();
+
+  return (
   <div style={{
     display: "flex",
     background: "#080A0F",
@@ -111,26 +114,30 @@ const MainApp = ({ currentView }) => (
       `}</style>
 
       <div style={{ maxWidth: 1440, margin: "0 auto", padding: "32px 28px 48px" }}>
-        <PageView viewKey={currentView}>
-          {currentView === "dashboard"            && <Dashboard />}
-          {currentView === "create-exam"          && <CreateExam />}
-          {currentView === "schemes-generator"    && <SchemeOfWorkGenerator />}
-          {currentView === "review-exam"          && <ReviewExam />}
-          {currentView === "edit-exam"            && <ReviewExam />}
-          {currentView === "edit-exam-questions"  && <ReviewQuestionsStep />}
-          {currentView === "payment"              && <Payment />}
-          {currentView === "question-bank"        && <QuestionBank />}
-          {currentView === "my-exams"             && <MyExams />}
-          {currentView === "settings"             && <Settings />}
+        <PageView viewKey={location.pathname}>
+          <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/create-exam" element={<CreateExam />} />
+            <Route path="/schemes" element={<SchemeOfWorkGenerator />} />
+            <Route path="/review-exam" element={<ReviewExam />} />
+            <Route path="/edit-exam" element={<ReviewExam />} />
+            <Route path="/edit-exam-questions" element={<ReviewQuestionsStep />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/question-bank" element={<QuestionBank />} />
+            <Route path="/my-exams" element={<MyExams />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
         </PageView>
       </div>
     </main>
   </div>
-);
+  );
+};
 
 /* ─── Root ───────────────────────────────────────────────── */
 const ExamGeneratorPlatform = () => {
-  const { user, currentView } = useGlobals();
+  const { user } = useGlobals();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -143,7 +150,17 @@ const ExamGeneratorPlatform = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/"                      element={!user ? <Auth /> : <MainApp currentView={currentView} />} />
+        <Route path="/" element={!user ? <Auth /> : <Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={!user ? <Navigate to="/" replace /> : <MainApp />} />
+        <Route path="/create-exam" element={!user ? <Navigate to="/" replace /> : <MainApp />} />
+        <Route path="/schemes" element={!user ? <Navigate to="/" replace /> : <MainApp />} />
+        <Route path="/question-bank" element={!user ? <Navigate to="/" replace /> : <MainApp />} />
+        <Route path="/my-exams" element={!user ? <Navigate to="/" replace /> : <MainApp />} />
+        <Route path="/settings" element={!user ? <Navigate to="/" replace /> : <MainApp />} />
+        <Route path="/review-exam" element={!user ? <Navigate to="/" replace /> : <MainApp />} />
+        <Route path="/edit-exam" element={!user ? <Navigate to="/" replace /> : <MainApp />} />
+        <Route path="/edit-exam-questions" element={!user ? <Navigate to="/" replace /> : <MainApp />} />
+        <Route path="/payment" element={!user ? <Navigate to="/" replace /> : <MainApp />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/verify-email/:token"   element={<VerifyEmail />} />
         <Route path="/verify-email-success"  element={<VerifyEmailSuccess />} />

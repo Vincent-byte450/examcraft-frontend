@@ -33,13 +33,6 @@ export const GlobalsProvider = ({ children }) => {
     }
   });
 
-  // UI State - Initialize based on authentication status
-  const [currentView, setCurrentView] = useState(() => {
-    const token = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('user');
-    return (token && savedUser) ? 'dashboard' : 'login';
-  });
-  
   const [currentExam, setCurrentExam] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -163,7 +156,6 @@ export const GlobalsProvider = ({ children }) => {
     setUser(null);
     setCurrentExam(null);
     setSavedExams([]);
-    setCurrentView('login');
     
     // Clear localStorage
     try {
@@ -195,15 +187,6 @@ export const GlobalsProvider = ({ children }) => {
   // Derived state for authentication status
   const isAuthenticated = !!(authToken && user);
 
-  // Effect to handle view changes based on authentication
-  useEffect(() => {
-    if (isAuthenticated && currentView === 'login') {
-      setCurrentView('dashboard');
-    } else if (!isAuthenticated && currentView !== 'login') {
-      setCurrentView('login');
-    }
-  }, [isAuthenticated, currentView]);
-
   // inside GlobalsProvider
   // useEffect(() => {
   //   const applyTheme = async () => {
@@ -229,6 +212,31 @@ export const GlobalsProvider = ({ children }) => {
 
   //   return () => mediaQuery.removeEventListener('change', handleSystemChange);
   // }, []);
+
+  const setCurrentView = (view) => {
+    const routeMap = {
+      dashboard: '/dashboard',
+      'create-exam': '/create-exam',
+      'schemes-generator': '/schemes',
+      schemes: '/schemes',
+      'question-bank': '/question-bank',
+      'my-exams': '/my-exams',
+      settings: '/settings',
+      'review-exam': '/review-exam',
+      'edit-exam': '/edit-exam',
+      'edit-exam-questions': '/edit-exam-questions',
+      payment: '/payment',
+      login: '/',
+    };
+
+    const nextPath = routeMap[view] || '/dashboard';
+    if (window.location.pathname !== nextPath) {
+      window.location.href = nextPath;
+    }
+  };
+
+  const currentView = typeof window !== "undefined" ? window.location.pathname : "/";
+
   const fetchExamConfig = async (filters = {}) => {
     try {
       const params = new URLSearchParams({
