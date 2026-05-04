@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { API_BASE_URL } from '../config/env';
 import { useParams, useNavigate } from "react-router-dom";
 
 /* ─── shared full-screen shell ───────────────────────────── */
@@ -102,7 +103,7 @@ export const VerifyEmail = () => {
     const verifyEmail = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/auth/verify-email/${token}`,
+          `${API_BASE_URL}/api/auth/verify-email/${token}`,
           { method: "GET" }
         );
         if (res.ok) {

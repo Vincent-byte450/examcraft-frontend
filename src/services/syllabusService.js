@@ -1,8 +1,10 @@
 // import { API_BASE_URL } from '../config/api';
 // services/syllabusService.js
-export class SyllabusService {
+import { API_BASE_URL } from '../config/env';
+
+class SyllabusService {
   constructor() {
-    this.baseUrl = `http://localhost:5000/api/syllabus`;
+    this.baseUrl = `${API_BASE_URL}/api/syllabus`;
   }
 
   // 🔹 Get auth token (optional, keep if your backend is protected)
@@ -82,7 +84,7 @@ export class SyllabusService {
     try {
       const token = this.getAuthToken();
       
-      const response = await fetch(`${import.meta.env.API_BASE_URL}/api/upload/upload`, {
+      const response = await fetch(`${API_BASE_URL}/api/upload/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -104,3 +106,4 @@ export class SyllabusService {
     }
   }
 }
+export { SyllabusService };

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useToast } from './common/ToastSystem';
+import { API_BASE_URL } from '../config/env';
 
 const GlobalsContext = createContext();
 
@@ -13,7 +14,7 @@ export const useGlobals = () => {
 
 export const GlobalsProvider = ({ children }) => {
   // API Configuration
-  const API_BASE = 'http://localhost:5000';
+  const API_BASE = API_BASE_URL;
   
   // Authentication State - Initialize from localStorage
   const [authToken, setAuthToken] = useState(() => {

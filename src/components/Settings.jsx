@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from '../config/env';
 import {
   Save, User, Settings as SettingsIcon, Bell, Clock,
   Check, AlertCircle, Shield, Trash2, Upload, Download,
@@ -331,7 +332,7 @@ const Settings = () => {
 
   const requestVerification = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/auth/request-verification-email', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ email:user.email }) });
+      const res = await fetch(`${API_BASE_URL}/api/auth/request-verification-email`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ email:user.email }) });
       const d = await res.json();
       showNotification(res.ok ? 'Verification email sent! Check your inbox.' : (d.message || 'Failed to send'), res.ok ? 'success' : 'error');
     } catch { showNotification('An error occurred. Please try again.', 'error'); }

@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { API_API_BASE_URL } from '../config/env';
 
 export const useAIQuestionGeneration = (examData) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
 
-  const API_BASE_URL = `http://localhost:5000/api`; 
+  const API_BASE_URL = API_API_BASE_URL; 
 
   const getAuthToken = () => {
     return localStorage.getItem("authToken") || sessionStorage.getItem("authToken");

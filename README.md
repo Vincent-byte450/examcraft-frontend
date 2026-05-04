@@ -241,3 +241,15 @@ backend/
 ## Conclusion
 
 ExamCraft is a robust, scalable full‑stack platform built to support MtihaniKenya’s mission of improving access to high‑quality assessment tools. The combination of a static React frontend and a cloud‑hosted backend API ensures performance, reliability, and long‑term maintainability for production use.
+
+## Environment Variables
+
+Create a `.env` file (or copy from `.env.example`) and configure:
+
+- `VITE_API_BASE_URL` (required): Base URL for the backend API (e.g. `https://api.example.com`).
+- `VITE_FEATURE_ANALYTICS` (optional): Set to `true` to enable analytics integrations.
+- `VITE_FEATURE_AI_ENDPOINTS` (optional): Set to `false` to disable AI-related endpoint usage.
+- `VITE_ANALYTICS_ENDPOINT` (optional): Custom analytics ingestion endpoint.
+- `VITE_AI_ENDPOINT` (optional): Custom AI endpoint override.
+
+The app validates required variables at startup and throws a clear error in development if `VITE_API_BASE_URL` is missing.

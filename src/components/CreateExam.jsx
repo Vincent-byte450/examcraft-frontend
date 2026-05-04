@@ -7,12 +7,13 @@ import LoadingStep from "./LoadingStep";
 import ReviewQuestionsStep from "./ReviewQuestionsStep";
 import SyllabusUploadModal from "./SyllabusUploadModal";
 import { useGlobals } from "./Globals";
+import { API_API_BASE_URL } from "../config/env";
 import {
   Sparkles, FileText, CheckCircle2,
   Clock, Target, Zap, ArrowRight
 } from "lucide-react";
 
-const API_BASE_URL = `http://localhost:5000/api`;
+const API_BASE_URL = API_API_BASE_URL;
 const getAuthToken = () =>
   localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 

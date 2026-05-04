@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../config/env';
 
 const useQuestionAPI = (authToken) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  const API_BASE = `http://localhost:5000`;
+  const API_BASE = API_BASE_URL;
 
   const handleRequest = async (requestFn) => {
     try {
