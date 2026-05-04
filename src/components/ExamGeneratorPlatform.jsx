@@ -14,50 +14,10 @@ import ResetPassword from "./ResetPassword";
 import { VerifyEmail, VerifyEmailSuccess, VerifyEmailFailed, RegistrationStatus } from "./VerifyEmail";
 import { useGlobals } from "./Globals";
 import SchemeOfWorkGenerator from "./schemes/index";
+import { AppLoading } from "./common/FeedbackPatterns";
 
 /* ─── Loading screen ─────────────────────────────────────── */
-const LoadingScreen = () => (
-  <>
-    <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono&display=swap');
-      @keyframes spin   { to { transform: rotate(360deg); } }
-      @keyframes pulse  { 0%,100%{opacity:1} 50%{opacity:.3} }
-      @keyframes float  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-      @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-    `}</style>
-    <div style={{
-      minHeight: "100vh", background: "#080A0F",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      fontFamily: "'Syne', sans-serif",
-      backgroundImage: "linear-gradient(#1A1D2510 1px,transparent 1px),linear-gradient(90deg,#1A1D2510 1px,transparent 1px)",
-      backgroundSize: "60px 60px",
-    }}>
-      {/* Glow orbs */}
-      <div style={{ position:"fixed", width:400, height:400, borderRadius:"50%", background:"radial-gradient(circle,#00FF7F0F 0%,transparent 70%)", top:"20%", left:"20%", filter:"blur(60px)", pointerEvents:"none" }}/>
-      <div style={{ position:"fixed", width:300, height:300, borderRadius:"50%", background:"radial-gradient(circle,#00C8FF08 0%,transparent 70%)", bottom:"20%", right:"20%", filter:"blur(60px)", pointerEvents:"none" }}/>
-
-      <div style={{ textAlign:"center", animation:"fadeIn .6s ease forwards", position:"relative", zIndex:1 }}>
-        {/* Logo */}
-        <div style={{ width:72, height:72, borderRadius:20, background:"linear-gradient(135deg,#00FF7F,#00C8FF)", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 28px", fontSize:36, animation:"float 3s ease-in-out infinite", boxShadow:"0 0 40px #00FF7F20" }}>
-          📖
-        </div>
-
-        {/* Spinner ring */}
-        <div style={{ position:"relative", width:48, height:48, margin:"0 auto 28px" }}>
-          <div style={{ position:"absolute", inset:0, borderRadius:"50%", border:"2px solid #1A1D25" }}/>
-          <div style={{ position:"absolute", inset:0, borderRadius:"50%", border:"2px solid transparent", borderTopColor:"#00FF7F", animation:"spin .9s linear infinite" }}/>
-        </div>
-
-        <h2 style={{ fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:22, letterSpacing:"-0.02em", color:"#E8E8E0", marginBottom:8 }}>
-          Mtihani Kenya
-        </h2>
-        <p style={{ fontFamily:"'Space Mono',monospace", fontSize:11, letterSpacing:"0.12em", textTransform:"uppercase", color:"#3A3D45", animation:"pulse 2s ease-in-out infinite" }}>
-          Loading your workspace…
-        </p>
-      </div>
-    </div>
-  </>
-);
+const LoadingScreen = () => <AppLoading message="Loading your workspace…" />;
 
 /* ─── Page transition wrapper ────────────────────────────── */
 const PageView = ({ children, viewKey }) => {

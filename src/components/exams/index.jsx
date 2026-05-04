@@ -5,9 +5,9 @@ import ExamStatsCards from './ExamStatsCards';
 import ExamFilters from './ExamFilters';
 import ExamListItem from './ExamListItem';
 import Pagination from './../common/Pagination';
-import ErrorMessage from './../common/ErrorMessage';
 import useExamAPI from './../../hooks/useExamAPI';
 import AdBanner from './../AdBanner';
+import { SectionLoading, EmptyState, ErrorState, RetryButton } from './../common/FeedbackPatterns';
 
 const MyExams = () => {
   const { setCurrentView, setCurrentExam, authToken } = useGlobals();
@@ -87,15 +87,7 @@ const MyExams = () => {
 
   const spin = '@keyframes meSpin{to{transform:rotate(360deg)}} @keyframes meUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}';
 
-  if (loading && !isRefreshing) return (
-    <>
-      <style>{spin}</style>
-      <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:240, flexDirection:'column', gap:14 }}>
-        <div style={{ width:20, height:20, border:'2px solid #1A1D25', borderTopColor:'#00FF7F', borderRadius:'50%', animation:'meSpin .8s linear infinite' }}/>
-        <span style={{ fontSize:13, color:'#5A5D65', fontFamily:"'DM Sans',sans-serif" }}>Loading your exams…</span>
-      </div>
-    </>
-  );
+  if (loading && !isRefreshing) return <SectionLoading message="Loading exams…" minHeight={240} />;
 
   return (
     <>
@@ -105,7 +97,7 @@ const MyExams = () => {
       `}</style>
       <div style={{ fontFamily:"'DM Sans','Helvetica Neue',sans-serif", color:'#E8E8E0', animation:'meUp .45s ease forwards' }}>
 
-        <ErrorMessage error={error} onClose={() => setError(null)}/>
+        {error && <ErrorState title="Unable to load exams" description={error} onRetry={() => { setError(null); loadExams(pagination.currentPage, pagination.limit, true); loadStats(); }} />}
 
         {/* stats */}
         <ExamStatsCards stats={stats}/>
@@ -118,15 +110,7 @@ const MyExams = () => {
             <p style={{ fontSize:14, color:'#6A6A62' }}>Manage and download your AI-generated exams</p>
           </div>
           <div style={{ display:'flex', gap:10 }}>
-            <button
-              onClick={() => loadExams(pagination.currentPage, pagination.limit, true)}
-              disabled={isRefreshing}
-              style={{ display:'flex', alignItems:'center', gap:7, padding:'10px 18px', background:'transparent', border:'1px solid #1A1D25', borderRadius:100, color:'#6A6A62', fontSize:13, cursor: isRefreshing ? 'not-allowed' : 'pointer', fontFamily:"'DM Sans',sans-serif", transition:'all .2s' }}
-              onMouseEnter={e => { if (!isRefreshing) { e.currentTarget.style.borderColor='#2A2D35'; e.currentTarget.style.color='#E8E8E0'; }}}
-              onMouseLeave={e => { e.currentTarget.style.borderColor='#1A1D25'; e.currentTarget.style.color='#6A6A62'; }}
-            >
-              <RefreshCw size={13} style={{ animation: isRefreshing ? 'meSpin .8s linear infinite' : 'none' }}/> Refresh
-            </button>
+            <RetryButton onRetry={() => loadExams(pagination.currentPage, pagination.limit, true)} label={isRefreshing ? 'Refreshing…' : 'Refresh'} disabled={isRefreshing} />
             <button
               onClick={() => setCurrentView('create-exam')}
               style={{ display:'flex', alignItems:'center', gap:7, padding:'10px 22px', background:'#00FF7F', border:'none', borderRadius:100, color:'#080A0F', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:"'DM Sans',sans-serif", boxShadow:'0 4px 20px #00FF7F20', transition:'all .2s' }}
@@ -174,25 +158,14 @@ const MyExams = () => {
           {/* list */}
           <div>
             {exams.length === 0 ? (
-              <div style={{ padding:'52px 24px', textAlign:'center' }}>
-                <div style={{ width:60, height:60, borderRadius:'50%', background:'#1A1D25', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px' }}>
-                  <FileText size={24} color="#3A3D45"/>
-                </div>
-                <div style={{ fontFamily:"'Syne',sans-serif", fontWeight:700, fontSize:17, color:'#E8E8E0', marginBottom:8 }}>
-                  {hasActiveFilters ? 'No exams match your filters' : 'No exams created yet'}
-                </div>
-                <p style={{ fontSize:13, color:'#5A5D65', maxWidth:300, margin:'0 auto 24px', lineHeight:1.7 }}>
-                  {hasActiveFilters ? 'Try adjusting your search or filters.' : 'Create your first AI-generated exam to get started.'}
-                </p>
-                {!hasActiveFilters && (
-                  <button
-                    onClick={() => setCurrentView('create-exam')}
-                    style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'11px 24px', background:'#00FF7F', border:'none', borderRadius:100, color:'#080A0F', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:"'DM Sans',sans-serif" }}
-                  >
-                    <Plus size={14}/> Create Your First Exam
-                  </button>
-                )}
-              </div>
+              <EmptyState
+                icon={FileText}
+                title={hasActiveFilters ? 'No exams match your filters' : 'No exams available yet'}
+                description={hasActiveFilters ? 'Try adjusting your search or filter criteria.' : 'Create your first exam to get started.'}
+                action={!hasActiveFilters ? (
+                  <button onClick={() => setCurrentView('create-exam')} style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'11px 24px', background:'#00FF7F', border:'none', borderRadius:100, color:'#080A0F', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:"'DM Sans',sans-serif" }}><Plus size={14}/>Create your first exam</button>
+                ) : null}
+              />
             ) : (
               [...exams]
               .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)) // latest on top
