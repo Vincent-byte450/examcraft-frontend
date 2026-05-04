@@ -5,10 +5,10 @@ import { BookOpen, Plus, Database } from 'lucide-react';
 import QuestionBankFilters from './QuestionBankFilters';
 import QuestionItem from './QuestionItem';
 import Pagination from './../common/Pagination';
-import ErrorMessage from './../common/ErrorMessage';
 import useQuestionAPI from './../../hooks/useQuestionAPI';
 import EditQuestionModal from './../EditQuestionModal';
 import AdBanner from './../AdBanner';
+import { SectionLoading, EmptyState, ErrorState } from './../common/FeedbackPatterns';
 
 const Pill = ({ label, color }) => (
   <span style={{ fontSize:10, fontFamily:"'Space Mono',monospace", textTransform:'uppercase', letterSpacing:'0.06em', padding:'3px 10px', background:`${color}15`, border:`1px solid ${color}30`, borderRadius:100, color }}>
@@ -124,15 +124,7 @@ const QuestionBank = () => {
 
   const spin = '@keyframes qbSpin{to{transform:rotate(360deg)}} @keyframes qbUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}';
 
-  if (loading && questions.length === 0) return (
-    <>
-      <style>{spin}</style>
-      <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:240, flexDirection:'column', gap:14 }}>
-        <div style={{ width:20, height:20, border:'2px solid #1A1D25', borderTopColor:'#00FF7F', borderRadius:'50%', animation:'qbSpin .8s linear infinite' }}/>
-        <span style={{ fontSize:13, color:'#5A5D65', fontFamily:"'DM Sans',sans-serif" }}>Loading questions…</span>
-      </div>
-    </>
-  );
+  if (loading && questions.length === 0) return <SectionLoading message="Loading questions…" minHeight={240} />;
 
   return (
     <>
@@ -142,7 +134,7 @@ const QuestionBank = () => {
       `}</style>
       <div style={{ fontFamily:"'DM Sans','Helvetica Neue',sans-serif", color:'#E8E8E0', animation:'qbUp .45s ease forwards' }}>
 
-        <ErrorMessage error={error} onClose={() => setError(null)} />
+        {error && <ErrorState title="Unable to load question bank" description={error} onRetry={() => { setError(null); loadQuestions(); }} />}
 
         {/* header */}
         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:24, flexWrap:'wrap', gap:16 }}>
@@ -218,17 +210,7 @@ const QuestionBank = () => {
                 <div style={{ width:18, height:18, border:'2px solid #1A1D25', borderTopColor:'#00FF7F', borderRadius:'50%', animation:'qbSpin .8s linear infinite' }}/>
               </div>
             ) : questions.length === 0 ? (
-              <div style={{ padding:'52px 24px', textAlign:'center' }}>
-                <div style={{ width:60, height:60, borderRadius:'50%', background:'#1A1D25', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 16px' }}>
-                  <BookOpen size={24} color="#3A3D45"/>
-                </div>
-                <div style={{ fontFamily:"'Syne',sans-serif", fontWeight:700, fontSize:17, color:'#E8E8E0', marginBottom:8 }}>
-                  {hasActiveFilters ? 'No questions match your filters' : 'No questions found'}
-                </div>
-                <p style={{ fontSize:13, color:'#5A5D65', maxWidth:300, margin:'0 auto', lineHeight:1.7 }}>
-                  {hasActiveFilters ? 'Try adjusting your filters or search terms.' : 'No questions available for the selected curriculum.'}
-                </p>
-              </div>
+              <EmptyState icon={BookOpen} title={hasActiveFilters ? 'No questions match your filters' : 'No questions available'} description={hasActiveFilters ? 'Try adjusting your filters or search terms.' : 'Questions will appear here after you add or generate them.'} />
             ) : (
               questions.map((question, index) => (
                 <QuestionItem
