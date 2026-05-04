@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Phone, Lock, Mail, Zap, Globe, Shield, X, ArrowLeft, Eye, EyeOff, ArrowRight, CheckCircle, User } from 'lucide-react';
-import { useGlobals } from "./Globals";
+import { useAuth } from "../context/AuthContext";
+import { useUI } from "../context/UIContext";
+import { apiRequest } from "../services/apiClient";
 import LandingPage from './LandingPage';
 
 /* ─── helpers ────────────────────────────────────────────── */
@@ -149,10 +151,8 @@ const ForgotModal = ({ onClose, apiRequest }) => {
     if (!email.trim()) { setStatus('Please enter your email address.'); return; }
     setSending(true);
     try {
-      const response = await apiRequest('/api/auth/reset-password', { method:'POST', body:JSON.stringify({ email }) });
-      const data = await response.json();
-      if (response.ok) { setSuccess(true); }
-      else setStatus(data.message || 'Failed to send reset link.');
+      const data = await apiRequest('/api/auth/reset-password', { method:'POST', body:JSON.stringify({ email }) });
+      if (data) { setSuccess(true); } else setStatus('Failed to send reset link.');
     } catch { setStatus('Server error. Please try again.'); }
     finally { setSending(false); }
   };
@@ -196,7 +196,8 @@ const Auth = () => {
   const [localError, setLocalError] = useState('');
   const [showForgot, setShowForgot] = useState(false);
 
-  const { setCurrentView, isLoading, error:globalError, login, register, isAuthenticated, user, apiRequest } = useGlobals();
+  const { setCurrentView } = useUI();
+  const { isLoading, error:globalError, login, register, isAuthenticated, user } = useAuth();
   const mounted = useMount(50);
 
   useEffect(() => {
