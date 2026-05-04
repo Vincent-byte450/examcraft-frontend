@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useGlobals } from "./../Globals";
+import { useUI } from "../../context/UIContext";
+import { useAuth } from "../../context/AuthContext";
 import { Plus, RefreshCw, FileText } from 'lucide-react';
 import ExamStatsCards from './ExamStatsCards';
 import ExamFilters from './ExamFilters';
@@ -10,7 +11,8 @@ import useExamAPI from './../../hooks/useExamAPI';
 import AdBanner from './../AdBanner';
 
 const MyExams = () => {
-  const { setCurrentView, setCurrentExam, authToken } = useGlobals();
+  const { setCurrentView, setCurrentExam } = useUI();
+  const { authToken } = useAuth();
   const { loading, error, setError, fetchExams, fetchExamStats, fetchExamDetails, deleteExam, downloadExam } = useExamAPI(authToken);
 
   const [exams, setExams]           = useState([]);

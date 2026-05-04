@@ -4,7 +4,9 @@ import {
   Bell, Crown, Menu, X, WandIcon, User,
   LayoutDashboard, ChevronLeft, ChevronRight
 } from "lucide-react"
-import { useGlobals } from "./Globals"
+import { useAuth } from "../context/AuthContext"
+import { useUI } from "../context/UIContext"
+import { apiRequest } from "../services/apiClient"
 
 const MOBILE_BP = 768
 
@@ -117,7 +119,10 @@ const RecentPanel = ({ activities }) => {
 
 /* ── MAIN ─────────────────────────────────────────────────── */
 const Navigation = () => {
-  const { currentView, setCurrentView, user, logout, getDashboardStats, getSubscriptionInfo, apiRequest, isAuthenticated } = useGlobals()
+  const { currentView, setCurrentView } = useUI()
+  const { user, logout, isAuthenticated } = useAuth()
+  const getDashboardStats = async () => null
+  const getSubscriptionInfo = async () => null
   const [collapsed, setCollapsed] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
