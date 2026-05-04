@@ -1,5 +1,6 @@
+import { API_BASE_URL, buildApiUrl } from '../config/env';
 // utils/api.js
-export const API_BASE = 'http://localhost:5000';
+export const API_BASE = API_BASE_URL;
 
 // Common HTTP status codes
 export const HTTP_STATUS = {
@@ -358,22 +359,22 @@ export const dateUtils = {
 };
 
 export async function fetchMetadata() {
-  const res = await fetch(`http://localhost:5000/api/schemes/metadata`);
+  const res = await fetch(buildApiUrl(`/api/schemes/metadata`));
   return res.json();
 }
 
 export async function fetchSchemeList() {
-  const res = await fetch(`http://localhost:5000/api/schemes/list`);
+  const res = await fetch(buildApiUrl(`/api/schemes/list`));
   return res.json();
 }
 
 export async function fetchSchemeView(subject, form) {
-  const res = await fetch(`http://localhost:5000/api/schemes/view?subject=${encodeURIComponent(subject)}&form=${form}`);
+  const res = await fetch(buildApiUrl(`/api/schemes/view?subject=${encodeURIComponent(subject)}&form=${form}`));
   return res.json();
 }
 
 export async function generateEnhanced(data) {
-  const res = await fetch(`http://localhost:5000/api/schemes/generate-enhanced`, {
+  const res = await fetch(buildApiUrl(`/api/schemes/generate-enhanced`), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -382,7 +383,7 @@ export async function generateEnhanced(data) {
 }
 
 export async function exportEnhanced(data, format, coverPage) {
-  const res = await fetch(`http://localhost:5000/api/schemes/export`, {
+  const res = await fetch(buildApiUrl(`/api/schemes/export`), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ data, format, coverPage }),

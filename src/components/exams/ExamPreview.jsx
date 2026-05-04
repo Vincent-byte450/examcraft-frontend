@@ -24,7 +24,7 @@ const ExamPreview = ({ exam }) => {
   const [zoomIdx,           setZoomIdx]           = useState(3);
 
   const globals          = useGlobals();
-  const API_BASE         = globals?.API_BASE         || "http://localhost:5000";
+  const API_BASE         = globals?.API_BASE         || API_BASE_URL;
   const authToken        = globals?.authToken        || null;
   const showNotification = globals?.showNotification || ((msg, t) => console.log(`${t}: ${msg}`));
 

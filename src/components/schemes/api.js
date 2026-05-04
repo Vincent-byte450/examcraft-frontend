@@ -1,5 +1,7 @@
 // api.js - central fetch utils
-export const API_BASE = import.meta.env.VITE_API_BASE_URL || import.meta.env.API_BASE_URL || "http://localhost:5000";
+import { API_BASE_URL } from '../../config/env';
+
+export const API_BASE = API_BASE_URL;
 
 /**
  * fetchJson - wrapper that supports AbortController and simple timeout

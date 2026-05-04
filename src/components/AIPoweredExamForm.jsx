@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { API_BASE_URL } from '../config/env';
 import { Wand2, FileText, AlertCircle, ChevronRight, Check, Upload, Sparkles, GripVertical, LayoutTemplate, X, Hash } from 'lucide-react';
 import { TopicalQuestionsService } from "../services/TopicalQuestionsService";
 import { curriculumSubjects, subjectTopics } from '../constants/curriculumData';
@@ -783,7 +784,7 @@ const CreateExamWithAI = ({
           paperType:  examData.paperType,
         });
         const response = await fetch(
-          `http://localhost:5000/api/exams/configs/config?${params}`,
+          `${API_BASE_URL}/api/exams/configs/config?${params}`,
           { method: 'GET', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } },
         );
         if (!response.ok) throw new Error(`Request failed: ${response.status}`);

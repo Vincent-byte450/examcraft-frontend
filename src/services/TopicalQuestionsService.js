@@ -1,7 +1,9 @@
 // services/topicalQuestionsService.js
-export class TopicalQuestionsService {
+import { API_BASE_URL } from '../config/env';
+
+class TopicalQuestionsService {
   constructor() {
-    this.baseUrl = `http://localhost:5000/api/topical-questions`;
+    this.baseUrl = `${API_BASE_URL}/api/topical-questions`;
   }
 
   // 🔹 Get auth token (if backend is protected)
@@ -82,7 +84,7 @@ export class TopicalQuestionsService {
       const token = this.getAuthToken();
 
       const response = await fetch(
-        `${import.meta.env.API_BASE_URL}/api/upload/upload_topical`,
+        `${API_BASE_URL}/api/upload/upload_topical`,
         {
           method: "POST",
           headers: {
@@ -106,3 +108,5 @@ export class TopicalQuestionsService {
     }
   }
 }
+
+export { TopicalQuestionsService };
