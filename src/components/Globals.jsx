@@ -231,7 +231,8 @@ export const GlobalsProvider = ({ children }) => {
 
     const nextPath = routeMap[view] || '/dashboard';
     if (window.location.pathname !== nextPath) {
-      window.location.href = nextPath;
+      window.history.pushState({}, '', nextPath);
+      window.dispatchEvent(new PopStateEvent('popstate'));
     }
   };
 
