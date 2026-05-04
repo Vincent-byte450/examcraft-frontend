@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, Zap, Image, Plus, Trash2, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
+import { API_API_BASE_URL } from '../config/env';
 
 const API = API_API_BASE_URL;
 
